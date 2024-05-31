@@ -5,11 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace EncoderVisualizer
 {
     public class MainWindow: Form
     {
+        delegate VKBDeviceTab AddTabCallback(VKBDevice dev);
+        delegate void RemoveTabCallback(VKBDevice dev);
         public static MainWindow Instance { get { return actualInstance ?? (actualInstance = new MainWindow()); } }
         private static MainWindow actualInstance = null;
         private readonly TabControl Devices;
@@ -27,10 +30,25 @@ namespace EncoderVisualizer
         }
         public VKBDeviceTab AddDevice(VKBDevice dev)
         {
+            if (InvokeRequired)
+            {
+                AddTabCallback d = new AddTabCallback(AddDevice);
+                return Invoke(d, new object[] { dev }) as VKBDeviceTab;
+            }
             VKBDeviceTab tab = new VKBDeviceTab(dev);
             tab.Text = dev.DeviceName;
             Devices.Controls.Add(tab);
             return tab;
+        }
+        public void RemoveDevice(VKBDevice dev)
+        {
+            if (InvokeRequired)
+            {
+                RemoveTabCallback d = new RemoveTabCallback(RemoveDevice);
+                Invoke(d, new object[] { dev });
+                return;
+            }
+            Devices.Controls.Remove(dev.Tab);
         }
 
     }

@@ -19,7 +19,7 @@ namespace EncoderVisualizer.VKB
         public HidDevice HidDev;
         private HidStream Stream;
         private HidDeviceInputReceiver Receiver;
-        private VKBDeviceTab Tab;
+        public VKBDeviceTab Tab;
         private SortedList<byte, VKBEncoder> Encoders = new SortedList<byte, VKBEncoder>();
         private byte lastSeqNo;
         public VKBDevice(HidDevice dev) {

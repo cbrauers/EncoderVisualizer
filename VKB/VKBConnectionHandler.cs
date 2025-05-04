@@ -19,8 +19,15 @@ namespace EncoderVisualizer.VKB
             DeviceList.Local.Changed += DevicesChanged;
             foreach (HidDevice dev in DevList)
             {
-                if (dev.GetReportDescriptor().FeatureReports.Count() > 0)
-                    Devices.Add(new VKBDevice(dev));
+                try
+                {
+                    if (dev.GetReportDescriptor().FeatureReports.Count() > 0)
+                        Devices.Add(new VKBDevice(dev));
+                }
+                catch(NotSupportedException)
+                {
+                    // Ignore virtual controllers and the likes
+                }
             }
         }
         public void DevicesChanged(Object sender, EventArgs e)
@@ -39,8 +46,15 @@ namespace EncoderVisualizer.VKB
             {
                 if(Devices.Find(d => d.HidDev == dev) == null)
                 {
-                    if (dev.GetReportDescriptor().FeatureReports.Count() > 0)
-                        Devices.Add(new VKBDevice(dev));
+                    try
+                    {
+                        if (dev.GetReportDescriptor().FeatureReports.Count() > 0)
+                            Devices.Add(new VKBDevice(dev));
+                    }
+                    catch (NotSupportedException)
+                    {
+                        // Ignore virtual controllers and the likes
+                    }
                 }
             }
         }
